@@ -11,10 +11,13 @@ var DropGameCanvasView = Backbone.View.extend({
         'orange',
         'purple'
     ],
-    _CELL_HEIGHT: 10,
-    _CELL_WIDTH: 10,
+    _CELL_HEIGHT: 18,
+    _CELL_WIDTH: 18,
     _CELL_PADDING: 2,
     _CANVAS_PADDING: 5,
+    events: {
+        'click': '_clickHandler'
+    },
     initialize: function(options) {
         this._rows = options.rows || this._rows;
         this._cols = options.cols || this._cols;
@@ -32,14 +35,20 @@ var DropGameCanvasView = Backbone.View.extend({
         this._drawBackground();
         this._drawGameMatrix();
     },
+    _clickHandler: function(e) {
+        var pos = getMousePos(this.el, e);
+        var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
+        this.collection.selectCell(row, col);
+    },
+    getCellAddressFormXY: function(x, y) {},    // TODO
     _initializeCanvas: function() {
         var csize = this._calculateCanvasSize();
         this.$el.attr('height', csize[0]);
         this.$el.attr('width', csize[1]);
     },
     _calculateCanvasSize: function() {
-        var height = this._rows*(this._calculateCellHeight() + 2*this._CANVAS_PADDING );
-        var width = this._cols*(this._calculateCellWidth() + 2*this._CANVAS_PADDING );
+        var height = this._rows*this._calculateCellHeight();
+        var width = this._cols*this._calculateCellWidth();
         return [height, width];
     },
     _calculateCellHeight: function() { return this._CELL_HEIGHT + 2*this._CELL_PADDING; },
@@ -62,5 +71,12 @@ var DropGameCanvasView = Backbone.View.extend({
             }
         }
     },     // TODO
-    _drawCell: function(y, x, cell) {}  // TODO
+    _drawCell: function(y, x, cell) {
+        this.$el.drawRect({
+            fillStyle: cell.getColorString(this._COLOR_MAP),
+            x: x+this._CELL_PADDING, y: y+this._CELL_PADDING,
+            width: this._CELL_WIDTH, height: this._CELL_HEIGHT,
+            fromCenter: false
+        });
+    }  // TODO
 });

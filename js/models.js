@@ -1,5 +1,5 @@
 var CellModel = Backbone.Model.extend({
-    getColorString: function(colormap) { return colormap[this.color] },
+    getColorString: function(colormap) { return colormap[this.get('color')] },
 });
 
 var DropGameMatrix = Backbone.Collection.extend({
