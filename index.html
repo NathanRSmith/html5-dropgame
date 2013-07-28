@@ -1,17 +1,26 @@
 <html>
 <head>
     <style type="text/css">
-
+        #dropgame_canvas {
+            border: 1px solid black;
+        }
     </style>
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
     <script type="text/javascript" src="js/backbone-min.js"></script>
+    <script type="text/javascript" src="js/jcanvas.min.js"></script>
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/views.js"></script>
     <script type="text/javascript">
-
+        var dropGameCanvasView;
+        $(document).ready(function() {
+            dropGameCanvasView = new DropGameCanvasView({el: '#dropgame_canvas'});
+        });
     </script>
 </head>
 <body>
-
+    <div id="canvas_container">
+        <canvas id="dropgame_canvas"></canvas>
+    </div>
 </body>
 </html>
