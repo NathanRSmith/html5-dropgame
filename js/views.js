@@ -1,3 +1,5 @@
+// TODO Add knowledge of canvas padding
+
 var DropGameCanvasView = Backbone.View.extend({
     _backgroundColor: '#000',
     _gameMatrixClass: DropGameMatrix,
@@ -11,10 +13,10 @@ var DropGameCanvasView = Backbone.View.extend({
         'orange',
         'purple'
     ],
-    _CELL_HEIGHT: 18,
-    _CELL_WIDTH: 18,
+    _CELL_HEIGHT: 25,
+    _CELL_WIDTH: 25,
     _CELL_PADDING: 2,
-    _CANVAS_PADDING: 5,
+    _CANVAS_PADDING: 0,
     events: {
         'click': '_clickHandler'
     },
@@ -32,15 +34,25 @@ var DropGameCanvasView = Backbone.View.extend({
 
         // configure canvas and draw
         this._initializeCanvas();
-        this._drawBackground();
-        this._drawGameMatrix();
+        this.draw();
     },
     _clickHandler: function(e) {
         var pos = getMousePos(this.el, e);
         var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
-        this.collection.selectCell(row, col);
+        console.log(pos, cellAddr);
+        this.collection.selectCell(cellAddr.row, cellAddr.col);
+        this.draw();
     },
-    getCellAddressFormXY: function(x, y) {},    // TODO
+    getCellAddressFromXY: function(x, y) {
+        return {
+            col: Math.floor(x / (this._calculateCellWidth())),
+            row: Math.floor(y / (this._calculateCellHeight()))
+        }
+    },
+    draw: function() {
+        this._drawBackground();
+        this._drawGameMatrix();
+    },
     _initializeCanvas: function() {
         var csize = this._calculateCanvasSize();
         this.$el.attr('height', csize[0]);
@@ -70,13 +82,15 @@ var DropGameCanvasView = Backbone.View.extend({
                 this._drawCell(y, x, this.collection.at(i, j));
             }
         }
-    },     // TODO
+    },
     _drawCell: function(y, x, cell) {
-        this.$el.drawRect({
-            fillStyle: cell.getColorString(this._COLOR_MAP),
-            x: x+this._CELL_PADDING, y: y+this._CELL_PADDING,
-            width: this._CELL_WIDTH, height: this._CELL_HEIGHT,
-            fromCenter: false
-        });
-    }  // TODO
+        if( cell ){
+            this.$el.drawRect({
+                fillStyle: cell.getColorString(this._COLOR_MAP),
+                x: x+this._CELL_PADDING, y: y+this._CELL_PADDING,
+                width: this._CELL_WIDTH, height: this._CELL_HEIGHT,
+                fromCenter: false
+            });
+        }
+    }
 });
