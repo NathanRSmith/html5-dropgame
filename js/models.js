@@ -33,11 +33,16 @@ var DropGameMatrix = Backbone.Collection.extend({
     getHeight: function() { return this.height; },
     getWidth: function() { return this.width; },
     at: function(row, col) { try { return this._matrix[row][col]; } catch(e) { return undefined; } },
+    setAddr: function(row, col, val) {
+        this._matrix[row][col] = val;
+    },
     selectCell: function(row, col) {
         // remove cell in group (if more than one)
-        this._removeGroup(this.at(row, col));
+        var count = this._removeGroup(this.at(row, col));
+
+        console.log(count);
         // apply gravities
-        this._applyGravity()
+        this._applyGravity();
         this._resetAllVisited();
     },      // TODO
     _removeGroup: function(cell) {
@@ -70,7 +75,7 @@ var DropGameMatrix = Backbone.Collection.extend({
         return count;
     },
     _visitGroup: function(cell) {
-        if( !cell.isVisited() ) {
+        if( cell && !cell.isVisited() ) {
             var row = cell.get('row');
             var col = cell.get('col');
             cell.set('visited', true);
@@ -125,6 +130,28 @@ var DropGameMatrix = Backbone.Collection.extend({
     _applyDownGravity: function() {
         // iterate from bottom up
         // if cell is null, move column down until filled
-        
-    },       // TODO
+        for(var i=this.getHeight()-1; i>=0; i--) {
+            for(var j=0; j<this.getWidth(); j++) {
+                var cell = this.at(i,j);
+                if( cell == null ) {
+
+                    // look up and find next filled cell
+                    var offset = 0;
+                    for(var y=i-1; y>=0; y--) {
+                        if( this.at(y,j) != null ) {
+                            offset = y;
+                            break;
+                        }
+                    }
+
+                    // move column down
+                    for(var y=offset; y>=0; y--) {
+                        this.setAddr(i-offset+y, j, this.at(y, j));
+                        this.setAddr(y, j, null);
+                    }
+
+                }
+            }
+        }
+    }       // TODO
 });
