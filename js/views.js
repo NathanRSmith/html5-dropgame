@@ -3,9 +3,9 @@
 var DropGameCanvasView = Backbone.View.extend({
     _backgroundColor: '#000',
     _gameMatrixClass: DropGameMatrix,
-    _rows: 4,
-    _cols: 4,
-    _NUM_COLORS: 5,
+    _rows: 3,
+    _cols: 3,
+    _NUM_COLORS: 3,
     _COLOR_MAP: [
         'blue',
         'red',
@@ -17,6 +17,11 @@ var DropGameCanvasView = Backbone.View.extend({
     _CELL_WIDTH: 25,
     _CELL_PADDING: 2,
     _CANVAS_PADDING: 0,
+    DEBUG_MATRIX: [
+        [1, 0, 2],
+        [2, 0, 1],
+        [2, 2, 0]
+    ],
     events: {
         'click': '_clickHandler'
     },
@@ -92,5 +97,8 @@ var DropGameCanvasView = Backbone.View.extend({
                 fromCenter: false
             });
         }
+    },
+    printColors: function() {
+        console.log(this._COLOR_MAP.join(', '));
     }
 });

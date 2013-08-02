@@ -2,7 +2,11 @@ var CellModel = Backbone.Model.extend({
     defaults: { 'visited':  false },
     getColorString: function(colormap) { return colormap[this.get('color')] },
     matches: function(cell) { try { return this.get('color') == cell.get('color'); } catch(e) { return false; } },
-    isVisited: function() { return this.get('visited'); }
+    isVisited: function() { return this.get('visited'); },
+    updateCellAddr: function(row, col) {
+        this.set('row', row);
+        this.set('col', col);
+    }
 });
 
 var DropGameMatrix = Backbone.Collection.extend({
@@ -11,19 +15,29 @@ var DropGameMatrix = Backbone.Collection.extend({
         this.height = options.height;
         this.width = options.width;
         this.numColors = options.numColors;
-        this._generateMatrix();
+        this._generateRandomMatrix();
     },
-    _generateMatrix: function() {
+    _generateRandomMatrix: function() {
         var mat = new Array(this.height)
         for(var i=0; i<this.height; i++) {
             mat[i] = new Array(this.width);
             for(var j=0; j<this.width; j++) {
-                mat[i][j] = this._generateCell(i, j);
+                mat[i][j] = this._generateRandomCell(i, j);
             }
         }
         this._matrix = mat;
     },
-    _generateCell: function(row, col) {
+    generateMatrix: function(matrix) {
+        var mat = new Array(this.height)
+        for(var i=0; i<this.height; i++) {
+            mat[i] = new Array(this.width);
+            for(var j=0; j<this.width; j++) {
+                mat[i][j] = new this.modelClass({row: i, col: j, color: matrix[i][j]});
+            }
+        }
+        this._matrix = mat;
+    },
+    _generateRandomCell: function(row, col) {
         return new this.modelClass({
             color: _.random(0, this.numColors-1),
             row: row,
@@ -136,7 +150,7 @@ var DropGameMatrix = Backbone.Collection.extend({
                 if( cell == null ) {
 
                     // look up and find next filled cell
-                    var offset = 0;
+                    var offset = -1;
                     for(var y=i-1; y>=0; y--) {
                         if( this.at(y,j) != null ) {
                             offset = y;
@@ -147,11 +161,36 @@ var DropGameMatrix = Backbone.Collection.extend({
                     // move column down
                     for(var y=offset; y>=0; y--) {
                         this.setAddr(i-offset+y, j, this.at(y, j));
+                        this.at(i-offset+y, j).updateCellAddr(i-offset+y, j);
                         this.setAddr(y, j, null);
                     }
 
                 }
             }
         }
-    }       // TODO
+    },       // TODO
+    printMatrix: function() {
+        for(var i=0; i<this.getHeight(); i++) {
+            var l = [];
+            for(var j=0; j<this.getWidth(); j++) {
+                if(this.at(i,j))
+                    l.push(this.at(i,j).get('color'));
+                else
+                    l.push('n');
+            }
+            console.log(l.join(', '));
+        }
+    },
+    printVisited: function() {
+        for(var i=0; i<this.getHeight(); i++) {
+            var l = [];
+            for(var j=0; j<this.getWidth(); j++) {
+                if(this.at(i,j))
+                    l.push(boolToInt(this.at(i,j).get('visited')));
+                else
+                    l.push('n');
+            }
+            console.log(l.join(', '));
+        }
+    }
 });

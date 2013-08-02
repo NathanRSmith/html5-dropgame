@@ -5,3 +5,7 @@ function getMousePos(canvas, evt) {
         y: evt.clientY - rect.top
     };
 }
+
+function boolToInt(val) {
+    return val ? 1 : 0;
+}
