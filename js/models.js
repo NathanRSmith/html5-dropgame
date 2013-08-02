@@ -140,14 +140,50 @@ var DropGameMatrix = Backbone.Collection.extend({
         this._applyDownGravity();
         this._applyRightGravity();
     },
-    _applyRightGravity: function() {},      // TODO
+    _applyRightGravity: function() {
+        // check if any column is empty, if so, shift to the right
+        // go from right to left
+        for(var j=this.getWidth()-1; j>=1; j--) {   // columns, but not first
+            if( this._isColumnEmpty(j) ) {
+
+                // search for next non-empty column
+                var offset = -1;
+                for(var x=j-1; x>=0; x--) {
+                    if( !this._isColumnEmpty(x) ) {
+                        offset = x;
+                        break;
+                    }
+                }
+
+                // move columns over
+                for(var x=offset; x>=0; x--) {
+                    for(var i=0; i<this.getHeight(); i++ ) {
+                        if( this.at(i, x) ) {
+                            this.setAddr(i, j-offset+x, this.at(i, x));
+                            this.at(i, j-offset+x).updateCellAddr(i, j-offset+x);
+                            this.setAddr(i, x, null);
+                        }
+                    }
+                }
+            }
+        }
+    },
+    _isColumnEmpty: function(col) {
+        var empty = true;
+        for(var i=0; i<this.getHeight(); i++) {
+            if( this.at(i, col) != null ) {
+                empty = false;
+                break;
+            }
+        }
+        return empty;
+    },
     _applyDownGravity: function() {
         // iterate from bottom up
         // if cell is null, move column down until filled
         for(var i=this.getHeight()-1; i>=0; i--) {
             for(var j=0; j<this.getWidth(); j++) {
-                var cell = this.at(i,j);
-                if( cell == null ) {
+                if( this.at(i,j) == null ) {
 
                     // look up and find next filled cell
                     var offset = -1;
@@ -160,15 +196,17 @@ var DropGameMatrix = Backbone.Collection.extend({
 
                     // move column down
                     for(var y=offset; y>=0; y--) {
-                        this.setAddr(i-offset+y, j, this.at(y, j));
-                        this.at(i-offset+y, j).updateCellAddr(i-offset+y, j);
-                        this.setAddr(y, j, null);
+                        if( this.at(y, j) ) {
+                            this.setAddr(i-offset+y, j, this.at(y, j));
+                            this.at(i-offset+y, j).updateCellAddr(i-offset+y, j);
+                            this.setAddr(y, j, null);
+                        }
                     }
 
                 }
             }
         }
-    },       // TODO
+    },
     printMatrix: function() {
         for(var i=0; i<this.getHeight(); i++) {
             var l = [];
