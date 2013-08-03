@@ -14,7 +14,7 @@ dispatcher = _.extend({}, Backbone.Events);
 var ScoreView = Backbone.View.extend({
     el: '#score',
     score: 0,
-    coeff: 10,
+//    coeff: 10,
     initialize: function(options) {
         this.listenTo(dispatcher, 'moveMade', this.moveHandler);
         this.listenTo(dispatcher, 'newGame', this.resetScore);
@@ -29,9 +29,9 @@ var ScoreView = Backbone.View.extend({
         this.updateScore(value);
         this.render();
     },
-    // Move score is: removed * coeff
-    computeMoveScore: function(removed) {
-        return removed * this.coeff;
+    // Move score is: n*(n-1)
+    computeMoveScore: function(n) {
+        return n*(n-1);
     },
     updateScore: function(value) {
         this.score += value;
