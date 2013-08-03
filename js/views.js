@@ -4,15 +4,30 @@
  * Events:
  *     * moveMade returns number removed
  *     * gameOver
+ *     * newGame
+ *     * preNewGame
  *
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+var NewGameBtnView = Backbone.View.extend({
+    el: '#new_game',
+    events: {
+        'click': 'btnClicked'
+    },
+    btnClicked: function(e) {
+        dispatcher.trigger('preNewGame');
+    }
+});
 
 var MovesLeftView = Backbone.View.extend({
     el: '#moves_left',
     initialize: function() {
         this.listenTo(dispatcher, 'moveMade', this.moveCallback);
+        this.listenTo(dispatcher, 'newGame', this.newGameCallback);
+        this.render( game.collection.countMovesLeft() );
+    },
+    newGameCallback: function() {
         this.render( game.collection.countMovesLeft() );
     },
     moveCallback: function(move) {
@@ -90,6 +105,7 @@ var DropGameCanvasView = Backbone.View.extend({
         });
 
         this.listenTo(dispatcher, 'gameOver', this.gameOverHandler);
+        this.listenTo(dispatcher, 'preNewGame', this.newGameHandler);
 
         // configure canvas and draw
         this._initializeCanvas();
@@ -112,6 +128,13 @@ var DropGameCanvasView = Backbone.View.extend({
         if( moves == 0 ) {
             dispatcher.trigger('gameOver');
         }
+    },
+    newGameHandler: function() {
+        this.collection.generateRandomMatrix();
+        this._initializeCanvas();
+        this.draw();
+
+        dispatcher.trigger('newGame');
     },
     gameOverHandler: function() {
         alert('Game Over!');

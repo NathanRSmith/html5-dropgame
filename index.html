@@ -18,6 +18,8 @@
             game = new DropGameCanvasView({el: '#dropgame_canvas'});
 //            moveLogView = new MoveLogView();
             movesLeftView = new MovesLeftView();
+            newGameBtnView = new NewGameBtnView();
+
         });
     </script>
 </head>
@@ -25,6 +27,7 @@
     <div id="canvas_container">
         <canvas id="dropgame_canvas"></canvas>
     </div>
+    <button id="new_game" type="button">New Game</button>
     <ul id="move_log"></ul>
     <div id="moves_left"></div>
 </body>

@@ -15,9 +15,9 @@ var DropGameMatrix = Backbone.Collection.extend({
         this.height = options.height;
         this.width = options.width;
         this.numColors = options.numColors;
-        this._generateRandomMatrix();
+        this.generateRandomMatrix();
     },
-    _generateRandomMatrix: function() {
+    generateRandomMatrix: function() {
         var mat = new Array(this.height)
         for(var i=0; i<this.height; i++) {
             mat[i] = new Array(this.width);
