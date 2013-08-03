@@ -14,7 +14,7 @@ dispatcher = _.extend({}, Backbone.Events);
 var ScoreView = Backbone.View.extend({
     el: '#score',
     score: 0,
-    coeff: 1,
+    coeff: 10,
     initialize: function(options) {
         this.listenTo(dispatcher, 'moveMade', this.moveHandler);
         this.listenTo(dispatcher, 'newGame', this.resetScore);
@@ -73,20 +73,17 @@ var MovesLeftView = Backbone.View.extend({
 });
 
 var BlocksLeftView = Backbone.View.extend({
-    el: '#moves_left',
+    el: '#blocks_left',
     initialize: function() {
-        this.listenTo(dispatcher, 'moveMade', this.moveCallback);
-        this.listenTo(dispatcher, 'newGame', this.newGameCallback);
-        this.render( game.collection.countMovesLeft() );
+        this.listenTo(dispatcher, 'moveMade', this.countAndRender);
+        this.listenTo(dispatcher, 'newGame', this.countAndRender);
+        this.countAndRender();
     },
-    newGameCallback: function() {
-        this.render( game.collection.countMovesLeft() );
+    countAndRender: function() {
+        this.render( game.collection.countCellsLeft() );
     },
-    moveCallback: function(move) {
-        this.render(move.get('moves'));
-    },
-    render: function(moves) {
-        this.$el.html(moves+' moves left');
+    render: function(cells) {
+        this.$el.html(cells+' blocks left');
     }
 });
 

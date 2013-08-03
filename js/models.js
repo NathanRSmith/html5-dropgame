@@ -75,7 +75,7 @@ var DropGameMatrix = Backbone.Collection.extend({
         }
         return count;
     },
-    countBlocksLeft: function() {
+    countCellsLeft: function() {
         var count = 0;
         this.each(function(cell) {
             if(cell) { count++; }
