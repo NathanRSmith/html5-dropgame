@@ -1,5 +1,57 @@
-// TODO Add knowledge of canvas padding
+/**
+ * Event Dispatcher
+ *
+ * Events:
+ *     * moveMade returns number removed
+ *     * gameOver
+ *
+ */
+dispatcher = _.extend({}, Backbone.Events);
 
+
+var MovesLeftView = Backbone.View.extend({
+    el: '#moves_left',
+    initialize: function() {
+        this.listenTo(dispatcher, 'moveMade', this.moveCallback);
+        this.render( game.collection.countMovesLeft() );
+    },
+    moveCallback: function(move) {
+        this.render(move.get('moves'));
+    },
+    render: function(moves) {
+        this.$el.html(moves+' moves left');
+    }
+});
+
+
+//var MoveLogView = Backbone.View.extend({
+//    el: '#move_log',
+//    entryViews: [],
+//    collection: new Backbone.Collection(),
+//    initialize: function(options) {
+//        this.listenTo(dispatcher, 'moveMade', this.addEntry)
+//    },
+//    addEntry: function(move) {
+//        this.collection.add([move]);
+//        var view = new MoveEntryView({model: move});
+//        this.$el.prepend(view.$el);
+//    }
+//});
+//var MoveEntryView = Backbone.View.extend({
+//    initialize: function(options) { this.render() },
+//    render: function() {
+//        var $el = $('<li/>', {
+//            html: 'Clicked: '+this.model.get('x')+', '+this.model.get('y')+'.'+
+//                ' Cell: '+this.model.get('row')+', '+this.model.get('col')+'.'+
+//                ' Removed: '+this.model.get('count')
+//        });
+//        this.setElement($el);
+//    }
+//});
+
+
+
+// TODO Add knowledge of canvas padding
 var DropGameCanvasView = Backbone.View.extend({
     _backgroundColor: '#000',
     _gameMatrixClass: DropGameMatrix,
@@ -37,6 +89,8 @@ var DropGameCanvasView = Backbone.View.extend({
             numColors: this._NUM_COLORS
         });
 
+        this.listenTo(dispatcher, 'gameOver', this.gameOverHandler);
+
         // configure canvas and draw
         this._initializeCanvas();
         this.draw();
@@ -45,8 +99,22 @@ var DropGameCanvasView = Backbone.View.extend({
         var pos = getMousePos(this.el, e);
         var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
         console.log(pos, cellAddr);
-        this.collection.selectCell(cellAddr.row, cellAddr.col);
+        var removed = this.collection.selectCell(cellAddr.row, cellAddr.col);
         this.draw();
+
+        var moves = this.collection.countMovesLeft();
+        dispatcher.trigger('moveMade', new Backbone.Model({
+            x: pos.x, y: pos.y,
+            row: cellAddr.row, col: cellAddr.col,
+            removed: removed,
+            moves: moves,
+        }));
+        if( moves == 0 ) {
+            dispatcher.trigger('gameOver');
+        }
+    },
+    gameOverHandler: function() {
+        alert('Game Over!');
     },
     getCellAddressFromXY: function(x, y) {
         return {

@@ -58,7 +58,9 @@ var DropGameMatrix = Backbone.Collection.extend({
         // apply gravities
         this._applyGravity();
         this._resetAllVisited();
-    },      // TODO
+
+        return count;
+    },
     _removeGroup: function(cell) {
         var that = this;
         var count = 0;

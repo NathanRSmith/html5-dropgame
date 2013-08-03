@@ -16,6 +16,8 @@
         var dropGameCanvasView;
         $(document).ready(function() {
             game = new DropGameCanvasView({el: '#dropgame_canvas'});
+//            moveLogView = new MoveLogView();
+            movesLeftView = new MovesLeftView();
         });
     </script>
 </head>
@@ -23,5 +25,7 @@
     <div id="canvas_container">
         <canvas id="dropgame_canvas"></canvas>
     </div>
+    <ul id="move_log"></ul>
+    <div id="moves_left"></div>
 </body>
 </html>
