@@ -10,6 +10,40 @@
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+
+var ScoreView = Backbone.View.extend({
+    el: '#score',
+    score: 0,
+    coeff: 1,
+    initialize: function(options) {
+        this.listenTo(dispatcher, 'moveMade', this.moveHandler);
+        this.listenTo(dispatcher, 'newGame', this.resetScore);
+
+        this.render();
+    },
+    render: function() {
+        this.$el.html('Score: '+this.score+' points');
+    },
+    moveHandler: function(move) {
+        var value = this.computeMoveScore(move.get('removed'));
+        this.updateScore(value);
+        this.render();
+    },
+    // Move score is: removed * coeff
+    computeMoveScore: function(removed) {
+        return removed * this.coeff;
+    },
+    updateScore: function(value) {
+        this.score += value;
+        this.render();
+    },
+    resetScore: function() {
+        this.score = 0;
+        this.render();
+    }
+});
+
+
 var NewGameBtnView = Backbone.View.extend({
     el: '#new_game',
     events: {
@@ -21,6 +55,24 @@ var NewGameBtnView = Backbone.View.extend({
 });
 
 var MovesLeftView = Backbone.View.extend({
+    el: '#moves_left',
+    initialize: function() {
+        this.listenTo(dispatcher, 'moveMade', this.moveCallback);
+        this.listenTo(dispatcher, 'newGame', this.newGameCallback);
+        this.render( game.collection.countMovesLeft() );
+    },
+    newGameCallback: function() {
+        this.render( game.collection.countMovesLeft() );
+    },
+    moveCallback: function(move) {
+        this.render(move.get('moves'));
+    },
+    render: function(moves) {
+        this.$el.html(moves+' moves left');
+    }
+});
+
+var BlocksLeftView = Backbone.View.extend({
     el: '#moves_left',
     initialize: function() {
         this.listenTo(dispatcher, 'moveMade', this.moveCallback);
