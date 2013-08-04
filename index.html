@@ -1,9 +1,39 @@
 <html>
 <head>
     <style type="text/css">
-        #dropgame_canvas {
-            /*border: 1px solid black;*/
+        body {
+            position: relative;
+            margin: 0 0 0 0;
         }
+
+        #left_column {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 200px;
+            overflow-y: auto;
+        }
+        #middle_column {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 200px;
+            right: 0;
+        }
+        #right_column {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 200px;
+            border-left: 1px solid black;
+        }
+        .relative-container {
+            height: 100%;
+            width: 100%;
+        }
+        #dropgame_canvas {}
     </style>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
@@ -13,10 +43,8 @@
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/views.js"></script>
     <script type="text/javascript">
-        var dropGameCanvasView;
         $(document).ready(function() {
-            game = new DropGameCanvasView({el: '#dropgame_canvas'});
-//            moveLogView = new MoveLogView();
+            game = new DropGameFullCanvasView({el: '#dropgame_canvas'});
             movesLeftView = new MovesLeftView();
             newGameBtnView = new NewGameBtnView();
             scoreView = new ScoreView();
@@ -25,15 +53,19 @@
     </script>
 </head>
 <body>
-    <div id="canvas_container">
-        <canvas id="dropgame_canvas"></canvas>
-    </div>
-    <button id="new_game" type="button">New Game</button>
-    <ul id="move_log"></ul>
-    <div id="score"></div>
-    <div id="moves_left"></div>
-    <div id="blocks_left"></div>
+    <div id="left_column">
+        <button id="new_game" type="button">New Game</button>
+        <div id="score"></div>
+        <div id="moves_left"></div>
+        <div id="blocks_left"></div>
 
-    <a href="https://github.com/NathanRSmith/html5-dropgame">https://github.com/NathanRSmith/html5-dropgame</a>
+        <a href="https://github.com/NathanRSmith/html5-dropgame">Source</a>
+    </div>
+    <div id="middle_column">
+        <div class="relative-container">
+            <canvas id="dropgame_canvas"></canvas>
+        </div>
+    </div>
+    <!--<div id="right_column"></div>-->
 </body>
 </html>

@@ -1,0 +1,38 @@
+<html>
+<head>
+    <style type="text/css">
+        #dropgame_canvas {
+            /*border: 1px solid black;*/
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/underscore-min.js"></script>
+    <script type="text/javascript" src="js/backbone-min.js"></script>
+    <script type="text/javascript" src="js/jcanvas.min.js"></script>
+    <script type="text/javascript" src="js/utils.js"></script>
+    <script type="text/javascript" src="js/models.js"></script>
+    <script type="text/javascript" src="js/views.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            game = new DropGameCanvasView({el: '#dropgame_canvas'});
+//            moveLogView = new MoveLogView();
+            movesLeftView = new MovesLeftView();
+            newGameBtnView = new NewGameBtnView();
+            scoreView = new ScoreView();
+            blocksLeftView = new BlocksLeftView();
+        });
+    </script>
+</head>
+<body>
+    <div id="canvas_container">
+        <canvas id="dropgame_canvas"></canvas>
+    </div>
+    <button id="new_game" type="button">New Game</button>
+    <ul id="move_log"></ul>
+    <div id="score"></div>
+    <div id="moves_left"></div>
+    <div id="blocks_left"></div>
+
+    <a href="https://github.com/NathanRSmith/html5-dropgame">https://github.com/NathanRSmith/html5-dropgame</a>
+</body>
+</html>

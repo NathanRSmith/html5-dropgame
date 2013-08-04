@@ -115,6 +115,8 @@ var BlocksLeftView = Backbone.View.extend({
 
 
 
+
+
 // TODO Add knowledge of canvas padding
 var DropGameCanvasView = Backbone.View.extend({
     _backgroundColor: '#000',
@@ -164,18 +166,20 @@ var DropGameCanvasView = Backbone.View.extend({
         var pos = getMousePos(this.el, e);
         var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
         console.log(pos, cellAddr);
-        var removed = this.collection.selectCell(cellAddr.row, cellAddr.col);
-        this.draw();
+        if( cellAddr ) {
+            var removed = this.collection.selectCell(cellAddr.row, cellAddr.col);
+            this.draw();
 
-        var moves = this.collection.countMovesLeft();
-        dispatcher.trigger('moveMade', new Backbone.Model({
-            x: pos.x, y: pos.y,
-            row: cellAddr.row, col: cellAddr.col,
-            removed: removed,
-            moves: moves,
-        }));
-        if( moves == 0 ) {
-            dispatcher.trigger('gameOver');
+            var moves = this.collection.countMovesLeft();
+            dispatcher.trigger('moveMade', new Backbone.Model({
+                x: pos.x, y: pos.y,
+                row: cellAddr.row, col: cellAddr.col,
+                removed: removed,
+                moves: moves
+            }));
+            if( moves == 0 ) {
+                dispatcher.trigger('gameOver');
+            }
         }
     },
     newGameHandler: function() {
@@ -242,3 +246,68 @@ var DropGameCanvasView = Backbone.View.extend({
         console.log(this._COLOR_MAP.join(', '));
     }
 });
+
+var DropGameFullCanvasView = DropGameCanvasView.extend({
+    el: '#dropgame_canvas',
+    _initializeCanvas: function() {
+        // determine cell size based on canvas size
+        this.$el[0].height = this.$el.parent().height();
+        this.$el[0].width = this.$el.parent().width();
+        var canvasHeight = this.$el.height();
+        var canvasWidth = this.$el.width();
+        var cheight = this._calculateInitialCellHeight(canvasHeight);
+        var cwidth = this._calculateInitialCellWidth(canvasWidth);
+        var csize = Math.min(cheight, cwidth);
+        this._CELL_HEIGHT = csize;
+        this._CELL_WIDTH = csize;
+        var size = this._calculateCanvasSize(); // h, w
+        var padh = Math.round((canvasHeight - size[0]) / 2);
+        var padw = Math.round((canvasWidth - size[1]) / 2);
+
+        // set canvas offsets for where to start looking for click events (BBOX)
+        this.BBOX = {
+            miny: canvasHeight - size[0],
+            maxy: this.$el.height(),
+            minx: padw,
+            maxx: this.$el.height() - padw
+        }
+    },
+    _calculateInitialCellHeight: function(height) {
+        // solve for cell height based on number of cells and padding size
+        // h/rows - 2p
+        return Math.floor( (height / this._rows) - 2*this._CELL_PADDING);
+    },
+    _calculateInitialCellWidth: function(width) {
+        // solve for cell height based on number of cells and padding size
+        // h/rows - 2p
+        return Math.floor( (width / this._cols) - 2*this._CELL_PADDING);
+    },
+    _drawGameMatrix: function() {
+        for(var i=0; i<this._rows; i++) {
+            for(var j=0; j<this._rows; j++) {
+                var y = i*this._calculateCellHeight() + this.BBOX.miny;
+                var x = j*this._calculateCellWidth() + this.BBOX.minx;
+                this._drawCell(y, x, this.collection.at(i, j));
+            }
+        }
+    },
+    getCellAddressFromXY: function(x, y) {
+        if( this._withinBBOX(x, y) ) {
+            return {
+                col: Math.floor((x-this.BBOX.minx) / (this._calculateCellWidth())),
+                row: Math.floor((y-this.BBOX.miny) / (this._calculateCellHeight()))
+            }
+        }
+        return null;
+    },
+    _withinBBOX: function(x, y) {
+        if( x > this.BBOX.minx &&
+            x < this.BBOX.maxx &&
+            y > this.BBOX.miny &&
+            y < this.BBOX.maxy ) {
+
+            return true;
+        }
+        return false;
+    }
+})
