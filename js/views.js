@@ -144,6 +144,7 @@ var DropGameCanvasView = Backbone.View.extend({
         'click': '_clickHandler'
     },
     initialize: function(options) {
+        this.subclassPreInitialize(options);
         this._rows = options.rows || this._rows;
         this._cols = options.cols || this._cols;
         this._NUM_COLORS = options.numColors || this._NUM_COLORS;
@@ -161,7 +162,10 @@ var DropGameCanvasView = Backbone.View.extend({
         // configure canvas and draw
         this._initializeCanvas();
         this.draw();
+        this.subclassPostInitialize(options);
     },
+    subclassPreInitialize: function() {},
+    subclassPostInitialize: function() {},
     _clickHandler: function(e) {
         var pos = getMousePos(this.el, e);
         var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
@@ -249,6 +253,19 @@ var DropGameCanvasView = Backbone.View.extend({
 
 var DropGameFullCanvasView = DropGameCanvasView.extend({
     el: '#dropgame_canvas',
+    subclassPostInitialize: function(options) {
+        var that = this;
+        $(window).resize(function(e) { that.resizeHandler(e); });
+    },
+    resizeTimeout: null,
+    resizeHandler: function(e) {
+        var that = this;
+        clearTimeout(this.resizeTimeout);
+        this.resizeTimeout = setTimeout(function() {
+            that._initializeCanvas();
+            that.draw();
+        }, 100);
+    },
     _initializeCanvas: function() {
         // determine cell size based on canvas size
         this.$el[0].height = this.$el.parent().height();
