@@ -17,6 +17,12 @@ var DropGameMatrix = Backbone.Collection.extend({
         this.numColors = options.numColors;
         this.generateRandomMatrix();
     },
+    at: function(row, col) { try { return this._matrix[row][col]; } catch(e) { return undefined; } },
+    getHeight: function() { return this.height; },
+    getWidth: function() { return this.width; },
+    setAddr: function(row, col, val) {
+        this._matrix[row][col] = val;
+    },
     generateRandomMatrix: function() {
         var mat = new Array(this.height)
         for(var i=0; i<this.height; i++) {
@@ -43,12 +49,6 @@ var DropGameMatrix = Backbone.Collection.extend({
             row: row,
             col: col
         });
-    },
-    getHeight: function() { return this.height; },
-    getWidth: function() { return this.width; },
-    at: function(row, col) { try { return this._matrix[row][col]; } catch(e) { return undefined; } },
-    setAddr: function(row, col, val) {
-        this._matrix[row][col] = val;
     },
     selectCell: function(row, col) {
         // remove cell in group (if more than one)
@@ -133,13 +133,15 @@ var DropGameMatrix = Backbone.Collection.extend({
         this._matrix[cell.get('row')][cell.get('col')] = null;
     },
     _cellHasAdjacent: function(cell) {
-        var row = cell.get('row');
-        var col = cell.get('col');
-        // check all directions
-        if( cell.matches(this.at(row, col-1)) ) { return true; }
-        if( cell.matches(this.at(row-1, col)) ) { return true; }
-        if( cell.matches(this.at(row, col+1)) ) { return true; }
-        if( cell.matches(this.at(row+1, col)) ) { return true; }
+        if(cell) {
+            var row = cell.get('row');
+            var col = cell.get('col');
+            // check all directions
+            if( cell.matches(this.at(row, col-1)) ) { return true; }
+            if( cell.matches(this.at(row-1, col)) ) { return true; }
+            if( cell.matches(this.at(row, col+1)) ) { return true; }
+            if( cell.matches(this.at(row+1, col)) ) { return true; }
+        }
         return false;
     },
     _hasAdjacent: function(row, col) {
@@ -147,9 +149,9 @@ var DropGameMatrix = Backbone.Collection.extend({
     },
     _applyGravity: function() {
         this._applyDownGravity();
-        this._applyRightGravity();
+        this._applyRightColumnGravity();
     },
-    _applyRightGravity: function() {
+    _applyRightColumnGravity: function() {
         // check if any column is empty, if so, shift to the right
         // go from right to left
         for(var j=this.getWidth()-1; j>=1; j--) {   // columns, but not first
