@@ -12,6 +12,56 @@
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+var SummaryView = Backbone.View.extend({
+    el: '#game_summary',
+    time: null,
+    totalMoves: null,
+    blocksLeft: null,
+    score: null,
+    scorePenalty: null,
+    totalScore: null,
+    initialize: function(options) {
+        this.listenTo(dispatcher, 'postGameOver', this.gameOverHandler);
+        this.listenTo(dispatcher, 'newGame', this.newGameHandler);
+    },
+    gameOverHandler: function() {
+        this.$('.game-time').html( this.fetchTime() );
+        this.$('.total-moves').html( this.fetchMoves() );
+        this.$('.blocks-left').html( this.fetchBlocksLeft() );
+        this.$('.score').html( this.fetchScore() );
+        this.$('.score-penalty').html( this.fetchScorePenalty() );
+        this.$('.total-score').html( this.fetchTotalScore() );
+        this.show();
+    },
+    fetchTime: function() {
+        this.time = gameTimeView.getTime();
+        return gameTimeView.getTimeString();
+    },
+    fetchMoves: function() {
+        this.totalMoves = game.totalMoves;
+        return this.totalMoves;
+    },
+    fetchBlocksLeft: function() {
+        this.blocksLeft = game.collection.countCells();
+        return this.blocksLeft;
+    },
+    fetchScore: function() {
+        this.score = scoreView.getScore();
+        return this.score;
+    },
+    fetchScorePenalty: function() {
+        this.scorePenalty = scoreView.calculateScorePenalty(this.blocksLeft);
+        return this.scorePenalty;
+    },
+    fetchTotalScore: function() {
+        this.totalScore = this.score - this.scorePenalty;
+        return this.totalScore;
+    },
+    newGameHandler: function() { this.hide(); },
+    show: function() { this.$el.show(); },
+    hide: function() { this.$el.hide(); }
+});
+
 var GameTimeView = Backbone.View.extend({
     el: '#game_time',
     timer: null,
@@ -24,9 +74,14 @@ var GameTimeView = Backbone.View.extend({
         this.startTimer();
     },
     render: function() {
-        var min = parseInt( this.time / (60) );
-        var sec = parseInt( this.time % (60) );
-        this.$el.html(this._getIntTimeString(min)+':'+this._getIntTimeString(sec));
+        this.$el.html(this.getTimeString());
+    },
+    getTime: function() { return this.time; },
+    getTimeString: function(time) {
+        time = time || this.time;
+        var min = parseInt( time / (60) );
+        var sec = parseInt( time % (60) );
+        return this._getIntTimeString(min)+':'+this._getIntTimeString(sec)
     },
     _getIntTimeString: function(n) {
         var s = n.toString();
@@ -58,6 +113,7 @@ var GameTimeView = Backbone.View.extend({
 var ScoreView = Backbone.View.extend({
     el: '#score',
     score: 0,
+    scorePenalty: 0,
 //    coeff: 10,
     initialize: function(options) {
         this.listenTo(dispatcher, 'moveMade', this.moveHandler);
@@ -84,6 +140,14 @@ var ScoreView = Backbone.View.extend({
     resetScore: function() {
         this.score = 0;
         this.render();
+    },
+    getScore: function() {
+        return this.score;
+    },
+    // penalty is 10*n
+    calculateScorePenalty: function(blocksLeft) {
+        this.scorePenalty = 10*blocksLeft;
+        return this.scorePenalty;
     }
 });
 
@@ -103,10 +167,10 @@ var MovesLeftView = Backbone.View.extend({
     initialize: function() {
         this.listenTo(dispatcher, 'moveMade', this.moveCallback);
         this.listenTo(dispatcher, 'newGame', this.newGameCallback);
-        this.render( game.collection.countMovesLeft() );
+        this.render( game.collection.countGroups() );
     },
     newGameCallback: function() {
-        this.render( game.collection.countMovesLeft() );
+        this.render( game.collection.countGroups() );
     },
     moveCallback: function(move) {
         this.render(move.get('moves'));
@@ -124,41 +188,12 @@ var BlocksLeftView = Backbone.View.extend({
         this.countAndRender();
     },
     countAndRender: function() {
-        this.render( game.collection.countCellsLeft() );
+        this.render( game.collection.countCells() );
     },
     render: function(cells) {
         this.$el.html(cells+' blocks left');
     }
 });
-
-
-//var MoveLogView = Backbone.View.extend({
-//    el: '#move_log',
-//    entryViews: [],
-//    collection: new Backbone.Collection(),
-//    initialize: function(options) {
-//        this.listenTo(dispatcher, 'moveMade', this.addEntry)
-//    },
-//    addEntry: function(move) {
-//        this.collection.add([move]);
-//        var view = new MoveEntryView({model: move});
-//        this.$el.prepend(view.$el);
-//    }
-//});
-//var MoveEntryView = Backbone.View.extend({
-//    initialize: function(options) { this.render() },
-//    render: function() {
-//        var $el = $('<li/>', {
-//            html: 'Clicked: '+this.model.get('x')+', '+this.model.get('y')+'.'+
-//                ' Cell: '+this.model.get('row')+', '+this.model.get('col')+'.'+
-//                ' Removed: '+this.model.get('count')
-//        });
-//        this.setElement($el);
-//    }
-//});
-
-
-
 
 
 // TODO Add knowledge of canvas padding
@@ -184,6 +219,8 @@ var DropGameCanvasView = Backbone.View.extend({
         [2,1,1],
         [1,0,0]
     ],
+    gameOver: false,
+    totalMoves: 0,
     events: {
         'click': '_clickHandler'
     },
@@ -200,7 +237,6 @@ var DropGameCanvasView = Backbone.View.extend({
             numColors: this._NUM_COLORS
         });
 
-        this.listenTo(dispatcher, 'gameOver', this.gameOverHandler);
         this.listenTo(dispatcher, 'preNewGame', this.newGameHandler);
 
         // configure canvas and draw
@@ -211,36 +247,39 @@ var DropGameCanvasView = Backbone.View.extend({
     subclassPreInitialize: function() {},
     subclassPostInitialize: function() {},
     _clickHandler: function(e) {
-        var pos = getMousePos(this.el, e);
-        var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
-        console.log(pos, cellAddr);
-        if( cellAddr ) {
-            var removed = this.collection.selectCell(cellAddr.row, cellAddr.col);
-            this.draw();
+        if( this.gameOver == false ) {
+            var pos = getMousePos(this.el, e);
+            var cellAddr = this.getCellAddressFromXY(pos.x, pos.y);
+            console.log(pos, cellAddr);
+            if( cellAddr ) {
+                var removed = this.collection.selectCell(cellAddr.row, cellAddr.col);
+                this.draw();
 
-            var moves = this.collection.countMovesLeft();
-            dispatcher.trigger('moveMade', new Backbone.Model({
-                x: pos.x, y: pos.y,
-                row: cellAddr.row, col: cellAddr.col,
-                removed: removed,
-                moves: moves
-            }));
-            if( moves == 0 ) {
-                dispatcher.trigger('preGameOver');
-                dispatcher.trigger('gameOver');
-                dispatcher.trigger('postGameOver');
+                var moves = this.collection.countGroups();
+                this.totalMoves++;
+                dispatcher.trigger('moveMade', new Backbone.Model({
+                    x: pos.x, y: pos.y,
+                    row: cellAddr.row, col: cellAddr.col,
+                    removed: removed,
+                    moves: moves
+                }));
+                if( moves == 0 ) {
+                    this.gameOver = true;
+                    dispatcher.trigger('preGameOver');
+                    dispatcher.trigger('gameOver');
+                    dispatcher.trigger('postGameOver');
+                }
             }
         }
     },
     newGameHandler: function() {
+        this.totalMoves = 0;
+        this.gameOver = false;
         this.collection.generateRandomMatrix();
         this._initializeCanvas();
         this.draw();
 
         dispatcher.trigger('newGame');
-    },
-    gameOverHandler: function() {
-        alert('Game Over!');
     },
     getCellAddressFromXY: function(x, y) {
         return {

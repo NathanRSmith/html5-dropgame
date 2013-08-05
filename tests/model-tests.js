@@ -169,31 +169,31 @@ test('_removeGroup', function() {
     mat._removeGroup( mat.at(0,0) );
     ok( assertMatrixMatchesArray(mat, [[null, 0], [null, null]]) );
 });
-test('countCellsLeft', function() {
+test('countCells', function() {
     var mat = new DropGameMatrix({height: 2, width: 2, numColors: 2 });
-    equal( mat.countCellsLeft(), 4 );
+    equal( mat.countCells(), 4 );
     mat.setAddr(0,0,null);
-    equal( mat.countCellsLeft(), 3 );
+    equal( mat.countCells(), 3 );
     mat.setAddr(0,1,null);
-    equal( mat.countCellsLeft(), 2 );
+    equal( mat.countCells(), 2 );
     mat.setAddr(1,0,null);
-    equal( mat.countCellsLeft(), 1 );
+    equal( mat.countCells(), 1 );
     mat.setAddr(1,1,null);
-    equal( mat.countCellsLeft(), 0 );
+    equal( mat.countCells(), 0 );
 });
-test('countMovesLeft', function() {
+test('countGroups', function() {
     var m = [[0,0], [1,1]];
     var mat = new DropGameMatrix({height: 2, width: 2, numColors: 2 });
     mat.generateMatrix(m);
-    equal( mat.countMovesLeft(), 2 );
+    equal( mat.countGroups(), 2 );
 
     var m = [[1,0], [1,1]];
     mat.generateMatrix(m);
-    equal( mat.countMovesLeft(), 1 );
+    equal( mat.countGroups(), 1 );
 
     var m = [[1,0], [0,1]];
     mat.generateMatrix(m);
-    equal( mat.countMovesLeft(), 0 );
+    equal( mat.countGroups(), 0 );
 });
 test('_visitGroup', function() {
     var m = [[0,0], [1,1]];
