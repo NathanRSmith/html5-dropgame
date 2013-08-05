@@ -4,12 +4,56 @@
  * Events:
  *     * moveMade returns number removed
  *     * gameOver
+ *     * preGameOver
+ *     * postGameOver
  *     * newGame
  *     * preNewGame
  *
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+var GameTimeView = Backbone.View.extend({
+    el: '#game_time',
+    timer: null,
+    refresh: 1000,
+    time: 0,            // in sec
+    starttime: null,    // in sec
+    initialize: function(options) {
+        this.listenTo(dispatcher, 'preGameOver', this.stopTimer);
+        this.listenTo(dispatcher, 'newGame', this.startTimer);
+        this.startTimer();
+    },
+    render: function() {
+        var min = parseInt( this.time / (60) );
+        var sec = parseInt( this.time % (60) );
+        this.$el.html(this._getIntTimeString(min)+':'+this._getIntTimeString(sec));
+    },
+    _getIntTimeString: function(n) {
+        var s = n.toString();
+        if(s.length == 1) {
+            return '0'+s;
+        }
+        return s;
+    },
+    startTimer: function() {
+        var that = this;
+        this.starttime = Date.now();
+        this.time = 0;
+        this.timer = setInterval(function() {
+            that.timeEventHandler();
+        }, this.refresh);
+        this.render();
+    },
+    timeEventHandler: function() {
+        this.time = parseInt( (Date.now() - this.starttime) / 1000 );
+        this.render();
+    },
+    stopTimer: function() {
+        this.time = parseInt( (Date.now() - this.starttime) / 1000 );
+        clearInterval(this.timer);
+        this.render();
+    }
+});
 
 var ScoreView = Backbone.View.extend({
     el: '#score',
@@ -182,7 +226,9 @@ var DropGameCanvasView = Backbone.View.extend({
                 moves: moves
             }));
             if( moves == 0 ) {
+                dispatcher.trigger('preGameOver');
                 dispatcher.trigger('gameOver');
+                dispatcher.trigger('postGameOver');
             }
         }
     },

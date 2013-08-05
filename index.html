@@ -1,5 +1,6 @@
 <html>
 <head>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
     <style type="text/css">
         body {
             position: relative;
@@ -13,6 +14,7 @@
             bottom: 0;
             width: 200px;
             overflow-y: auto;
+            padding: 5px 5px 5px 5px;
         }
         #middle_column {
             position: absolute;
@@ -36,6 +38,7 @@
         }
         #dropgame_canvas {}
     </style>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
     <script type="text/javascript" src="js/backbone-min.js"></script>
@@ -50,21 +53,26 @@
             newGameBtnView = new NewGameBtnView();
             scoreView = new ScoreView();
             blocksLeftView = new BlocksLeftView();
+            gameTimeView = new GameTimeView();
         });
     </script>
 </head>
 <body>
     <div id="left_column">
-        <button id="new_game" type="button">New Game</button>
+        <button id="new_game" type="button" class="btn btn-primary">New Game</button>
         <div id="score"></div>
         <div id="moves_left"></div>
         <div id="blocks_left"></div>
+        <div id="game_time"></div>
 
         <a href="https://github.com/NathanRSmith/html5-dropgame">Source</a>
     </div>
     <div id="middle_column">
         <div class="relative-container">
             <canvas id="dropgame_canvas"></canvas>
+        </div>
+        <div id="game_summary">
+            <h1>Game Over!</h1>
         </div>
     </div>
     <!--<div id="right_column"></div>-->
