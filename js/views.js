@@ -196,7 +196,6 @@ var BlocksLeftView = Backbone.View.extend({
 });
 
 
-// TODO Add knowledge of canvas padding
 var DropGameCanvasView = Backbone.View.extend({
     _backgroundColor: '#000',
     _gameMatrixClass: DropGameMatrix,
