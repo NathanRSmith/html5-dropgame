@@ -370,7 +370,7 @@ var DropGameFullCanvasView = DropGameCanvasView.extend({
             miny: canvasHeight - size[0],
             maxy: this.$el.height(),
             minx: padw,
-            maxx: this.$el.height() - padw
+            maxx: this.$el.width() - padw
         }
     },
     _calculateInitialCellHeight: function(height) {
