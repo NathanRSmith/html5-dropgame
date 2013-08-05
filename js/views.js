@@ -122,7 +122,7 @@ var ScoreView = Backbone.View.extend({
         this.render();
     },
     render: function() {
-        this.$el.html('Score: '+this.score+' points');
+        this.$el.html('Score: '+this.score);
     },
     moveHandler: function(move) {
         var value = this.computeMoveScore(move.get('removed'));

@@ -1,6 +1,7 @@
 <html>
 <head>
     <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/font-awesome.min.css" rel="stylesheet" />
     <style type="text/css">
         body {
             position: relative;
@@ -19,8 +20,8 @@
         #middle_column {
             position: absolute;
             top: 0;
-            bottom: 0;
-            left: 200px;
+            bottom: 50px;
+            left: 0;
             right: 0;
             background-color: black;
         }
@@ -58,6 +59,13 @@
             background-color: #3a3c3c;
             border-color: #3a3c3c;
         }
+
+        #bottom_navbar {
+            /*text-align: center;*/
+        }
+        #bottom_navbar i {
+            font-size: 16pt;
+        }
     </style>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -80,15 +88,15 @@
     </script>
 </head>
 <body>
-    <div id="left_column">
-        <button type="button" class="new-game btn btn-primary">New Game</button>
-        <div id="score"></div>
-        <div id="moves_left"></div>
-        <div id="blocks_left"></div>
-        <div id="game_time"></div>
+    <!--<div id="left_column">-->
+        <!--<button type="button" class="new-game btn btn-primary">New Game</button>-->
+        <!--<div id="score"></div>-->
+        <!--<div id="moves_left"></div>-->
+        <!--<div id="blocks_left"></div>-->
+        <!--<div id="game_time"></div>-->
 
-        <a href="https://github.com/NathanRSmith/html5-dropgame">Source</a>
-    </div>
+        <!--<a href="https://github.com/NathanRSmith/html5-dropgame">Source</a>-->
+    <!--</div>-->
     <div id="middle_column">
         <div class="relative-container">
             <canvas id="dropgame_canvas"></canvas>
@@ -115,5 +123,13 @@
         </div>
     </div>
     <!--<div id="right_column"></div>-->
+    <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
+        <button type="button" class="new-game btn btn-primary navbar-btn pull-left"><i class="icon-refresh"></i></button>
+        <p id="game_time" class="navbar-text"></p>
+        <a href="https://github.com/NathanRSmith/html5-dropgame" class="btn btn-default navbar-btn pull-right"><i class="icon-code"></i></a>
+        <p id="score" class="navbar-text pull-right"></p>
+        <p id="moves_left" class="navbar-text pull-right"></p>
+        <p id="blocks_left" class="navbar-text pull-right"></p>
+    </div>
 </body>
 </html>
