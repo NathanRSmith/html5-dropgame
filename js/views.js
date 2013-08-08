@@ -12,6 +12,79 @@
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+var ShowStatisticsBtnView = Backbone.View.extend({
+    el: '.show-statistics',
+    events: { 'click': 'clickHandler' },
+    clickHandler: function() { statisticsView.render().show(); }
+});
+
+var StatisticsView = Backbone.View.extend({
+    el: '#game_statistics',
+    events: {
+        'click .reset-statistics': 'reset',
+        'click .close-statistics': 'hide'
+    },
+    initialize: function(options) {
+        this.listenTo(dispatcher, 'postGameOver', this.gameOverHandler);
+    },
+    // Fetch items from localstorage and display
+    render: function() {
+        if( this.options.localstorage ) {
+            this.$('.high-score').html(localStorage.highScore || '');
+            this.$('.low-score').html(localStorage.lowScore || '');
+            this.$('.average-score').html(parseFloat(localStorage.averageScore).toFixed(1) || '');
+            this.$('.games-played').html(localStorage.gamesPlayed || '0');
+            this.$('.average-number-moves').html(parseFloat(localStorage.averageNumberMoves).toFixed(1) || '');
+            this.$('.average-blocks-left').html(parseFloat(localStorage.averageBlocksLeft).toFixed(1) || '');
+
+            this.$('.no-localstorage').hide();
+            this.$('.localstorage').show();
+            this.$('.reset-statistics').show();
+        } else {
+            this.$('.no-localstorage').show();
+            this.$('.localstorage').hide();
+            this.$('.reset-statistics').hide();
+        }
+        return this;
+    },
+    gameOverHandler: function() {
+        localStorage.gamesPlayed = this.lstor('gamesPlayed', 0, 'i') + 1;
+        localStorage.highScore = Math.max( this.lstor('highScore', -9999, 'i'), summaryView.totalScore );
+        localStorage.lowScore = Math.min( this.lstor('lowScore', 9999, 'i'), summaryView.totalScore );
+
+        var ave = this.lstor('averageScore', 0, 'f');
+        localStorage.averageScore = ( ave*(localStorage.gamesPlayed-1)+summaryView.totalScore ) / localStorage.gamesPlayed;
+
+        var ave = this.lstor('averageNumberMoves', 0, 'f');
+        localStorage.averageNumberMoves = ( ave*(localStorage.gamesPlayed-1)+summaryView.totalMoves ) / localStorage.gamesPlayed;
+
+        var ave = this.lstor('averageBlocksLeft', 0, 'f');
+        localStorage.averageBlocksLeft = ( ave*(localStorage.gamesPlayed-1)+summaryView.blocksLeft ) / localStorage.gamesPlayed;
+    },
+    lstor: function(key, defval, parse) {
+        var val = localStorage[key] != null ? localStorage[key] : defval;
+        if( parse ) {
+            if( parse == 'f' ) { return parseFloat(val); }
+            else if( parse == 'i' ) { return parseInt(val); }
+        }
+        return val;
+    },
+    newGameHandler: function() { this.hide(); },
+    reset: function() {
+        localStorage.removeItem('highScore');
+        localStorage.removeItem('lowScore');
+        localStorage.removeItem('averageScore');
+        localStorage.removeItem('gamesPlayed');
+        localStorage.removeItem('averageGameTime');
+        localStorage.removeItem('averageNumberMoves');
+        localStorage.removeItem('averageBlocksLeft');
+        this.render();
+        return this;
+    },
+    show: function() { this.$el.show(); return this; },
+    hide: function() { this.$el.hide(); return this; }
+});
+
 var SummaryView = Backbone.View.extend({
     el: '#game_summary',
     time: null,
@@ -58,8 +131,8 @@ var SummaryView = Backbone.View.extend({
         return this.totalScore;
     },
     newGameHandler: function() { this.hide(); },
-    show: function() { this.$el.show(); },
-    hide: function() { this.$el.hide(); }
+    show: function() { this.$el.show(); return this; },
+    hide: function() { this.$el.hide(); return this; }
 });
 
 var GameTimeView = Backbone.View.extend({

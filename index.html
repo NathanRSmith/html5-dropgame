@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="no-js">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>HTML5 Drop Game</title>
@@ -48,7 +48,8 @@
             width: 100%;
         }
         #dropgame_canvas {}
-        #game_summary {
+
+        #game_statistics, #game_summary {
             position: absolute;
             top: 20%;
             width: 400px;
@@ -57,9 +58,6 @@
             background-color: white;
             padding: 15px 15px 15px 15px;
             text-align: center;
-        }
-        #game_summary hr {
-            border-top-color: darkgray;
         }
         #game_summary.panel {
             border-color: #3a3c3c
@@ -70,6 +68,17 @@
             border-color: #3a3c3c;
         }
 
+
+        #game_statistics .localstorage {
+            text-align: left;
+        }
+
+        .show-statistics.navbar-btn {
+            margin-right: 5px;
+        }
+
+
+
         #bottom_navbar {
             /*text-align: center;*/
         }
@@ -77,6 +86,7 @@
             font-size: 16pt;
         }
     </style>
+    <script type="text/javascript" src="js/modernizr.custom.34871.js"></script>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
     <script type="text/javascript" src="js/underscore-min.js"></script>
@@ -86,6 +96,11 @@
     <script type="text/javascript" src="js/models.js"></script>
     <script type="text/javascript" src="js/views.js"></script>
     <script type="text/javascript">
+        if( !Modernizr.canvas ) {
+            alert('HTML5 Canvas elements are not supported in your browser and you will not be able to play this game.\n' +
+                    'Please try another browser such as Chrome or Firefox.')
+        }
+
         $(document).ready(function() {
             game = new DropGameFullCanvasView({el: '#dropgame_canvas'});
             movesLeftView = new MovesLeftView();
@@ -94,6 +109,8 @@
             blocksLeftView = new BlocksLeftView();
             gameTimeView = new GameTimeView();
             summaryView = new SummaryView();
+            statisticsView = new StatisticsView({localstorage: Modernizr.localstorage});
+            showStatisticsBtnView = new ShowStatisticsBtnView({el: '.show-statistics'});
         });
     </script>
 </head>
@@ -131,12 +148,40 @@
             </dl>
             <button type="button" class="new-game btn btn-primary">New Game</button>
         </div>
+        <div id="game_statistics" class="panel panel-success" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Game Statistics</h3>
+            </div>
+            <div class="no-localstorage" style="display: none;">
+                HTML5 LocalStorage is not supported in your browser.
+                You will be able to play the game, but no statistics will be tracked.
+            </div>
+            <div class="localstorage">
+                <dl class="dl-horizontal">
+                    <dt>High Score</dt>
+                    <dd class="high-score"></dd>
+                    <dt>Low Score</dt>
+                    <dd class="low-score"></dd>
+                    <dt>Average Score</dt>
+                    <dd class="average-score"></dd>
+                    <dt>Games Played</dt>
+                    <dd class="games-played"></dd>
+                    <dt>Average # of Moves</dt>
+                    <dd class="average-number-moves"></dd>
+                    <dt>Average Blocks Left</dt>
+                    <dd class="average-blocks-left"></dd>
+                </dl>
+            </div>
+            <button type="button" class="reset-statistics btn btn-success">Reset Statistics</button>
+            <button type="button" class="close-statistics btn btn-primary">Close</button>
+        </div>
     </div>
     <!--<div id="right_column"></div>-->
     <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
         <button type="button" class="new-game btn btn-primary navbar-btn pull-left"><i class="icon-refresh"></i></button>
         <p id="game_time" class="navbar-text"></p>
         <a href="https://github.com/NathanRSmith/html5-dropgame" class="btn btn-default navbar-btn pull-right"><i class="icon-code"></i></a>
+        <button type="button" class="show-statistics btn btn-success navbar-btn pull-right"><i class="icon-bar-chart"></i></button>
         <p id="score" class="navbar-text pull-right"></p>
         <p id="moves_left" class="navbar-text pull-right"></p>
         <p id="blocks_left" class="navbar-text pull-right"></p>
