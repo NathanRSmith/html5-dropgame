@@ -6,86 +6,8 @@
 
     <link href="css/bootstrap.min.css" rel="stylesheet" />
     <link href="css/font-awesome.min.css" rel="stylesheet" />
-    <style type="text/css">
-        html {
-            height: 100%;
-            width: 100%;
-        }
-        body {
-            position: relative;
-            margin: 0 0 0 0;
-            height: 100%;
-            width: 100%;
-        }
+    <link href="css/styles.css"  rel="stylesheet" />
 
-        #left_column {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 200px;
-            overflow-y: auto;
-            padding: 5px 5px 5px 5px;
-        }
-        #middle_column {
-            position: absolute;
-            top: 0;
-            bottom: 50px;
-            left: 0;
-            right: 0;
-            background-color: black;
-        }
-        #right_column {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 200px;
-            border-left: 1px solid black;
-        }
-        .relative-container {
-            height: 100%;
-            width: 100%;
-        }
-        #dropgame_canvas {}
-
-        #game_statistics, #game_summary {
-            position: absolute;
-            top: 20%;
-            width: 400px;
-            left: 50%;
-            margin-left: -200px;
-            background-color: white;
-            padding: 15px 15px 15px 15px;
-            text-align: center;
-        }
-        #game_summary.panel {
-            border-color: #3a3c3c
-        }
-        #game_summary.panel .panel-heading {
-            color: #ffffff;
-            background-color: #3a3c3c;
-            border-color: #3a3c3c;
-        }
-
-
-        #game_statistics .localstorage {
-            text-align: left;
-        }
-
-        .show-statistics.navbar-btn {
-            margin-right: 5px;
-        }
-
-
-
-        #bottom_navbar {
-            /*text-align: center;*/
-        }
-        #bottom_navbar i {
-            font-size: 16pt;
-        }
-    </style>
     <script type="text/javascript" src="js/modernizr.custom.34871.js"></script>
     <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
@@ -111,6 +33,8 @@
             summaryView = new SummaryView();
             statisticsView = new StatisticsView({localstorage: Modernizr.localstorage});
             showStatisticsBtnView = new ShowStatisticsBtnView({el: '.show-statistics'});
+            helpView = new HelpView();
+            showHelpBtnView = new ShowHeltBtnView();
         });
     </script>
 </head>
@@ -175,6 +99,24 @@
             <button type="button" class="reset-statistics btn btn-success">Reset Statistics</button>
             <button type="button" class="close-statistics btn btn-primary">Close</button>
         </div>
+        <div id="game_help" class="panel panel-danger" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Instructions</h3>
+            </div>
+            <p>
+            To play this game click on blocks in groups of 2 or more of the same color.
+            Larger groups are worth many more points than smaller ones (n<sup>2</sup>-n).
+            </p><p>
+            Once there are no more moves the game is over.  A total score is computed by
+            taking the game score minus a score penalty (10 x number left).
+            </p><p>
+            Click on the <i class="icon-refresh"></i> button to start a new game at any time.
+            The <i class="icon-bar-chart"></i> button will display statistics of completed games played.
+            </p>
+            <div style="text-align: center;">
+                <button type="button" class="close-help btn btn-primary">Close</button>
+            </div>
+        </div>
     </div>
     <!--<div id="right_column"></div>-->
     <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
@@ -182,6 +124,7 @@
         <p id="game_time" class="navbar-text"></p>
         <a href="https://github.com/NathanRSmith/html5-dropgame" class="btn btn-default navbar-btn pull-right"><i class="icon-code"></i></a>
         <button type="button" class="show-statistics btn btn-success navbar-btn pull-right"><i class="icon-bar-chart"></i></button>
+        <button type="button" class="show-help btn btn-danger navbar-btn pull-right"><i class="icon-question-sign"></i></button>
         <p id="score" class="navbar-text pull-right"></p>
         <p id="moves_left" class="navbar-text pull-right"></p>
         <p id="blocks_left" class="navbar-text pull-right"></p>

@@ -12,6 +12,20 @@
  */
 dispatcher = _.extend({}, Backbone.Events);
 
+var ShowHeltBtnView = Backbone.View.extend({
+    el: '.show-help',
+    events: { 'click': 'clickHandler' },
+    clickHandler: function() { helpView.show(); }
+});
+
+var HelpView = Backbone.View.extend({
+    el: '#game_help',
+    events: { 'click .close-help': 'hide' },
+    show: function() { this.$el.show(); return this; },
+    hide: function() { this.$el.hide(); return this; }
+});
+
+
 var ShowStatisticsBtnView = Backbone.View.extend({
     el: '.show-statistics',
     events: { 'click': 'clickHandler' },
