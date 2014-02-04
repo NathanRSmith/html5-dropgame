@@ -256,7 +256,8 @@ module.exports = function (grunt) {
                         '.htaccess',
                         'images/{,*/}*.{webp,gif}',
                         'styles/fonts/{,*/}*.*',
-						'bower_components/**/*'
+						'bower_components/**/*',
+						'.nojekyll'
                     ]
                 }],
             },
