@@ -1,58 +1,38 @@
 <!DOCTYPE html>
-<html class="no-js">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>HTML5 Drop Game</title>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
 
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/font-awesome.min.css" rel="stylesheet" />
-    <link href="css/styles.css"  rel="stylesheet" />
+        <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+        
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
 
-    <script type="text/javascript" src="js/modernizr.custom.34871.js"></script>
-    <script type="text/javascript" src="js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/underscore-min.js"></script>
-    <script type="text/javascript" src="js/backbone-min.js"></script>
-    <script type="text/javascript" src="js/jcanvas.min.js"></script>
-    <script type="text/javascript" src="js/utils.js"></script>
-    <script type="text/javascript" src="js/models.js"></script>
-    <script type="text/javascript" src="js/views.js"></script>
-    <script type="text/javascript">
-        if( !Modernizr.canvas ) {
-            alert('HTML5 Canvas elements are not supported in your browser and you will not be able to play this game.\n' +
-                    'Please try another browser such as Chrome or Firefox.')
-        }
-
-        $(document).ready(function() {
-            game = new DropGameFullCanvasView({el: '#dropgame_canvas'});
-            movesLeftView = new MovesLeftView();
-            newGameBtnView = new NewGameBtnView({el: '.new-game'});
-            scoreView = new ScoreView();
-            blocksLeftView = new BlocksLeftView();
-            gameTimeView = new GameTimeView();
-            summaryView = new SummaryView();
-            statisticsView = new StatisticsView({localstorage: Modernizr.localstorage});
-            showStatisticsBtnView = new ShowStatisticsBtnView({el: '.show-statistics'});
-            helpView = new HelpView();
-            showHelpBtnView = new ShowHeltBtnView();
-        });
-    </script>
-</head>
-<body>
-    <!--<div id="left_column">-->
-        <!--<button type="button" class="new-game btn btn-primary">New Game</button>-->
-        <!--<div id="score"></div>-->
-        <!--<div id="moves_left"></div>-->
-        <!--<div id="blocks_left"></div>-->
-        <!--<div id="game_time"></div>-->
-
-        <!--<a href="https://github.com/NathanRSmith/html5-dropgame">Source</a>-->
-    <!--</div>-->
-    <div id="middle_column">
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+        <!-- build:js scripts/vendor/modernizr.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <!-- endbuild -->
+    </head>
+    <body>
+        <!--[if lt IE 10]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+        
+        
+        <div id="middle_column">
         <div class="relative-container">
             <canvas id="dropgame_canvas"></canvas>
         </div>
-        <div id="game_summary" class="panel" style="display: none;">
+        <div id="game_summary" class="panel" style="display: none">
             <div class="panel-heading">
                 <h3 class="panel-title">Game Summary</h3>
             </div>
@@ -72,11 +52,11 @@
             </dl>
             <button type="button" class="new-game btn btn-primary">New Game</button>
         </div>
-        <div id="game_statistics" class="panel panel-success" style="display: none;">
+        <div id="game_statistics" class="panel panel-success" style="display: none">
             <div class="panel-heading">
                 <h3 class="panel-title">Game Statistics</h3>
             </div>
-            <div class="no-localstorage" style="display: none;">
+            <div class="no-localstorage" style="display: none">
                 HTML5 LocalStorage is not supported in your browser.
                 You will be able to play the game, but no statistics will be tracked.
             </div>
@@ -99,7 +79,7 @@
             <button type="button" class="reset-statistics btn btn-success">Reset Statistics</button>
             <button type="button" class="close-statistics btn btn-primary">Close</button>
         </div>
-        <div id="game_help" class="panel panel-danger" style="display: none;">
+        <div id="game_help" class="panel panel-danger" style="display: none">
             <div class="panel-heading">
                 <h3 class="panel-title">Instructions</h3>
             </div>
@@ -113,13 +93,13 @@
             Click on the <i class="icon-refresh"></i> button to start a new game at any time.
             The <i class="icon-bar-chart"></i> button will display statistics of completed games played.
             </p>
-            <div style="text-align: center;">
+            <div style="text-align: center">
                 <button type="button" class="close-help btn btn-primary">Close</button>
             </div>
         </div>
-    </div>
-    <!--<div id="right_column"></div>-->
-    <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
+        </div>
+        <!--<div id="right_column"></div>-->
+        <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
         <button type="button" class="new-game btn btn-primary navbar-btn pull-left"><i class="icon-refresh"></i></button>
         <p id="game_time" class="navbar-text"></p>
         <a href="https://github.com/NathanRSmith/html5-dropgame" class="btn btn-default navbar-btn pull-right"><i class="icon-code"></i></a>
@@ -128,6 +108,32 @@
         <p id="score" class="navbar-text pull-right"></p>
         <p id="moves_left" class="navbar-text pull-right"></p>
         <p id="blocks_left" class="navbar-text pull-right"></p>
-    </div>
-</body>
+        </div>
+
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="bower_components/underscore/underscore.js"></script>
+        <script src="bower_components/backbone/backbone.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/jcanvas/jcanvas.js"></script>
+        <script src="bower_components/fastclick/lib/fastclick.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
+        
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
+        
+        <!-- build:js scripts/main.js -->
+                <script src="scripts/utils.js"></script>
+                <script src="scripts/models.js"></script>
+                <script src="scripts/views.js"></script>
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
+    </body>
 </html>
