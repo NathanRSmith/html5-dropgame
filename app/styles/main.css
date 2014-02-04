@@ -1,1 +1,88 @@
 /* Will be compiled down to a single stylesheet with your sass files */
+html {
+    height: 100%;
+    width: 100%;
+}
+body {
+    position: relative;
+    margin: 0 0 0 0;
+    height: 100%;
+    width: 100%;
+}
+
+#left_column {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 200px;
+    overflow-y: auto;
+    padding: 5px 5px 5px 5px;
+}
+#middle_column {
+    position: absolute;
+    top: 0;
+    bottom: 50px;
+    left: 0;
+    right: 0;
+    background-color: black;
+}
+#right_column {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 200px;
+    border-left: 1px solid black;
+}
+.relative-container {
+    height: 100%;
+    width: 100%;
+}
+#dropgame_canvas {}
+
+#game_help, #game_statistics, #game_summary {
+    position: absolute;
+    top: 20%;
+    width: 400px;
+    left: 50%;
+    margin-left: -200px;
+    background-color: white;
+    padding: 15px 15px 15px 15px;
+    text-align: center;
+}
+#game_summary.panel {
+    border-color: #3a3c3c
+}
+#game_summary.panel .panel-heading {
+    color: #ffffff;
+    background-color: #3a3c3c;
+    border-color: #3a3c3c;
+}
+
+
+#game_statistics .localstorage {
+    text-align: left;
+}
+.show-statistics.navbar-btn {
+    margin-right: 5px;
+}
+
+#game_help {
+    text-align: left;
+}
+#game_help .panel-heading {
+    text-align: center;
+}
+.show-help.navbar-btn {
+    margin-right: 5px;
+}
+
+
+
+#bottom_navbar {
+    /*text-align: center;*/
+}
+#bottom_navbar i {
+    font-size: 16pt;
+}

@@ -11,36 +11,116 @@
         <meta name="viewport" content="width=device-width">
 
         <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
         
+        <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+
+        <!-- build:css(.tmp) styles/main.css -->
         <link rel="stylesheet" href="styles/main.css">
-        <script src="scripts/vendor/modernizr.min.js"></script>
+        <!-- endbuild -->
+        <!-- build:js scripts/vendor/modernizr.js -->
+        <script src="bower_components/modernizr/modernizr.js"></script>
+        <!-- endbuild -->
     </head>
     <body>
-    <div class="container" style="margin-top:50px">
-        <div class="hero-unit">
-            <h1>Wotcha!</h1>
-            <p>You now have</p>
-            <ul>
-                <li>HTML5 Boilerplate</li>
-                <li>Twitter Bootstrap</li>
-            </ul>
-            <p>installed.</p>
-            <h3>Enjoy coding! - Yeoman</h3>
-        </div>
-    </div>
-
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
+        <!--[if lt IE 10]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-
-        <!-- Add your site or application content here -->
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-        <script>window.jQuery || document.write('<script src="scripts/vendor/jquery.min.js"><\/script>')</script>
         
         
+        <div id="middle_column">
+        <div class="relative-container">
+            <canvas id="dropgame_canvas"></canvas>
+        </div>
+        <div id="game_summary" class="panel" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Game Summary</h3>
+            </div>
+            <dl class="dl-horizontal">
+                <dt>Time</dt>
+                <dd class="game-time"></dd>
+                <dt>Moves</dt>
+                <dd class="total-moves"></dd>
+                <dt>Blocks Left</dt>
+                <dd class="blocks-left"></dd>
+                <dt>Score</dt>
+                <dd class="score"></dd>
+                <dt>Score Penalty</dt>
+                <dd class="score-penalty"></dd>
+                <dt>Total Score</dt>
+                <dd class="total-score"></dd>
+            </dl>
+            <button type="button" class="new-game btn btn-primary">New Game</button>
+        </div>
+        <div id="game_statistics" class="panel panel-success" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Game Statistics</h3>
+            </div>
+            <div class="no-localstorage" style="display: none;">
+                HTML5 LocalStorage is not supported in your browser.
+                You will be able to play the game, but no statistics will be tracked.
+            </div>
+            <div class="localstorage">
+                <dl class="dl-horizontal">
+                    <dt>High Score</dt>
+                    <dd class="high-score"></dd>
+                    <dt>Low Score</dt>
+                    <dd class="low-score"></dd>
+                    <dt>Average Score</dt>
+                    <dd class="average-score"></dd>
+                    <dt>Games Played</dt>
+                    <dd class="games-played"></dd>
+                    <dt>Average # of Moves</dt>
+                    <dd class="average-number-moves"></dd>
+                    <dt>Average Blocks Left</dt>
+                    <dd class="average-blocks-left"></dd>
+                </dl>
+            </div>
+            <button type="button" class="reset-statistics btn btn-success">Reset Statistics</button>
+            <button type="button" class="close-statistics btn btn-primary">Close</button>
+        </div>
+        <div id="game_help" class="panel panel-danger" style="display: none;">
+            <div class="panel-heading">
+                <h3 class="panel-title">Instructions</h3>
+            </div>
+            <p>
+            To play this game click on blocks in groups of 2 or more of the same color.
+            Larger groups are worth many more points than smaller ones (n<sup>2</sup>-n).
+            </p><p>
+            Once there are no more moves the game is over.  A total score is computed by
+            taking the game score minus a score penalty (10 x number left).
+            </p><p>
+            Click on the <i class="icon-refresh"></i> button to start a new game at any time.
+            The <i class="icon-bar-chart"></i> button will display statistics of completed games played.
+            </p>
+            <div style="text-align: center;">
+                <button type="button" class="close-help btn btn-primary">Close</button>
+            </div>
+        </div>
+        </div>
+        <!--<div id="right_column"></div>-->
+        <div id="bottom_navbar" class="navbar navbar-fixed-bottom navbar-inverse">
+        <button type="button" class="new-game btn btn-primary navbar-btn pull-left"><i class="icon-refresh"></i></button>
+        <p id="game_time" class="navbar-text"></p>
+        <a href="https://github.com/NathanRSmith/html5-dropgame" class="btn btn-default navbar-btn pull-right"><i class="icon-code"></i></a>
+        <button type="button" class="show-statistics btn btn-success navbar-btn pull-right"><i class="icon-bar-chart"></i></button>
+        <button type="button" class="show-help btn btn-danger navbar-btn pull-right"><i class="icon-question-sign"></i></button>
+        <p id="score" class="navbar-text pull-right"></p>
+        <p id="moves_left" class="navbar-text pull-right"></p>
+        <p id="blocks_left" class="navbar-text pull-right"></p>
+        </div>
 
+        <!-- build:js scripts/vendor.js -->
+        <!-- bower:js -->
+        <script src="bower_components/jquery/jquery.js"></script>
+        <script src="bower_components/underscore/underscore.js"></script>
+        <script src="bower_components/backbone/backbone.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="bower_components/jcanvas/jcanvas.js"></script>
+        <script src="bower_components/fastclick/lib/fastclick.js"></script>
+        <!-- endbower -->
+        <!-- endbuild -->
+        
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
@@ -48,5 +128,12 @@
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
+        
+        <!-- build:js scripts/main.js -->
+                <script src="scripts/utils.js"></script>
+                <script src="scripts/models.js"></script>
+                <script src="scripts/views.js"></script>
+        <script src="scripts/main.js"></script>
+        <!-- endbuild -->
     </body>
 </html>
