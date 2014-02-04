@@ -1,0 +1,14 @@
+{
+  "name": "jcanvas",
+  "homepage": "https://github.com/caleb531/jcanvas",
+  "version": "13.11.21",
+  "_release": "13.11.21",
+  "_resolution": {
+    "type": "version",
+    "tag": "13.11.21",
+    "commit": "71eb7eec18f09758cfbc1f6797dc107d802c2d42"
+  },
+  "_source": "git://github.com/caleb531/jcanvas.git",
+  "_target": "*",
+  "_originalSource": "jcanvas"
+}
