@@ -8,14 +8,14 @@ It uses HTML5 canvas, Backbone.js and JCanvas (http://calebevans.me/projects/jca
 View at http://nathanrsmith.github.io/html5-dropgame/
 
 
-git clone ...
-npm install
-npm install -g grunt-cli bower
-bower install
-grunt server
+    git clone ...
+    npm install
+    npm install -g grunt-cli bower
+    bower install
+    grunt server
 
 ...
 
-grunt build
-grunt copy
-grunt gh-pages
+    grunt build
+    grunt copy
+    grunt gh-pages
